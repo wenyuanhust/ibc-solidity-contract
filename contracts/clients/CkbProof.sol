@@ -86,36 +86,6 @@ contract CkbLightClient {
     }
 }
 
-contract CkbLightClientMock is CkbLightClient {
-    // Mock function for `getHeader`
-    function getHeader(
-        bytes32
-    ) public pure override returns (CKBHeader memory) {
-        string memory hexString = "6985ea05ba57214c2c3ef93185b0dda2a5d6b56dfcf79e51a1c4e8e2b287d72a";
-        bytes32 transactionsRoot;
-        assembly {
-            transactionsRoot := mload(add(hexString, 0x20))
-        }
-
-        CKBHeader memory ckbHeader = CKBHeader({
-            version: 0,
-            compactTarget: 0,
-            timestamp: 0,
-            number: 0,
-            epoch: 0,
-            parentHash: bytes32(0),
-            transactionsRoot: transactionsRoot,
-            proposalsHash: bytes32(0),
-            extraHash: bytes32(0),
-            dao: bytes32(0),
-            nonce: uint128(0),
-            extension: "",
-            blockHash: bytes32(0)
-        });
-        return ckbHeader;
-    }
-}
-
 // Define ckb blake2b
 contract Blake2b {
     function blake2b(bytes memory data) public view returns (bytes32) {
@@ -249,7 +219,13 @@ function isCommitInCommitments(
     return false;
 }
 
+// import "hardhat/console.sol";
+
 library CkbProof {
+//     constructor() {
+//   logger.log("CkbProof deployed");
+// }
+
     function verifyProof(
         bytes memory abiEncodedProof,
         bytes memory path,
