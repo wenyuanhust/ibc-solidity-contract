@@ -124,7 +124,7 @@ contract CkbMbt {
 }
 
 function parseProof(
-    bytes memory abiEncodedProof
+    bytes calldata abiEncodedProof
 ) pure returns (AxonObjectProof memory) {
     AxonObjectProof memory proof = abi.decode(
         abiEncodedProof,
@@ -219,24 +219,14 @@ function isCommitInCommitments(
     return false;
 }
 
-// import "hardhat/console.sol";
-
 library CkbProof {
-//     constructor() {
-//   logger.log("CkbProof deployed");
-// }
-
     function verifyProof(
-        bytes memory abiEncodedProof,
+        bytes calldata abiEncodedProof,
         bytes memory path,
         bytes calldata value
     ) public returns (bool) {
         // Parse the proof from the abi encoded data
         AxonObjectProof memory axonObjProof = parseProof(abiEncodedProof);
-
-        // Get the CKB header
-        CkbLightClient lightClient;
-        CKBHeader memory header = lightClient.getHeader(axonObjProof.blockHash);
 
         // Calculate the transaction hash and witness hash
         (, bytes32 witnessHash) = calculateHashes(axonObjProof.ckbTransaction);
@@ -250,6 +240,9 @@ library CkbProof {
         ) {
             return false;
         }
+        // Get the CKB header
+        CkbLightClient lightClient;
+        CKBHeader memory header = lightClient.getHeader(axonObjProof.blockHash);
 
         // Create the VerifyProofPayload
         VerifyProofPayload memory payload = VerifyProofPayload({
