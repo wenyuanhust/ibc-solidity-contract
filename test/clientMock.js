@@ -5,7 +5,7 @@ contract("CkbLightClientMock", () => {
     it("should return correct transactionsRoot", async () => {
         const ckbLightClientMock = await CkbLightClientMock.new();
         console.log("ckbLightClient deployed on ", ckbLightClientMock.address);  
-        let txRootHexString = "0x6985ea05ba57214c2c3ef93185b0dda2a5d6b56dfcf79e51a1c4e8e2b287d72a";
+        let txRootHexString = "0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433";
         let txRootBytes32Value = ethers.utils.hexZeroPad(txRootHexString, 32);
         let blockNumberHexString = "0x2a";
         let blockNumber = ethers.utils.hexZeroPad(blockNumberHexString, 32);

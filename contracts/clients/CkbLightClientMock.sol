@@ -9,7 +9,7 @@ contract CkbLightClientMock is CkbLightClient {
     function getHeader(
         bytes32
     ) public pure override returns (CKBHeader memory) {
-        string memory hexString = "6985ea05ba57214c2c3ef93185b0dda2a5d6b56dfcf79e51a1c4e8e2b287d72a";
+        bytes32 transactionsRoot = 0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433;
 
         CKBHeader memory ckbHeader = CKBHeader({
             version: 0,
@@ -18,7 +18,7 @@ contract CkbLightClientMock is CkbLightClient {
             number: 0,
             epoch: 0,
             parentHash: bytes32(0),
-            transactionsRoot: bytes32(fromHex(hexString)),
+            transactionsRoot: transactionsRoot,
             proposalsHash: bytes32(0),
             extraHash: bytes32(0),
             dao: bytes32(0),

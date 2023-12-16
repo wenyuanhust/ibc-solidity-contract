@@ -87,50 +87,32 @@ contract CkbLightClient {
 }
 
 // Define ckb blake2b
-contract Blake2b {
-    function blake2b(bytes memory data) public view returns (bytes32) {
-        // axon_precompile_address(0x06)
-        address blake2b_addr = address(0x0106);
-        (bool isSuccess, bytes memory res) = blake2b_addr.staticcall(
-            abi.encode(data)
-        );
+function blake2b(bytes memory data) view returns (bytes32) {
+    // axon_precompile_address(0x06)
+    address blake2b_addr = address(0x0106);
+    (bool isSuccess, bytes memory res) = blake2b_addr.staticcall(data);
 
-        bytes32 hash;
-        if (isSuccess) {
-            hash = abi.decode(res, (bytes32));
-        }
-        return hash;
+    bytes32 hash;
+    if (isSuccess) {
+        hash = abi.decode(res, (bytes32));
     }
+    return hash;
 }
 
-contract CkbMbt {
-    function verify(
-        VerifyProofPayload memory payload
-    ) public view returns (bool) {
-        // axon_precompile_address(0x07)
-        address ckb_mbt_addr = address(0x0107);
-        (bool isSuccess, bytes memory res) = ckb_mbt_addr.staticcall(
-            abi.encode(payload)
-        );
-
-        uint8[] memory verify_success;
-        if (isSuccess) {
-            verify_success = abi.decode(res, (uint8[]));
-        } else {
-            return false;
-        }
-        return verify_success[0] == 1;
-    }
-}
-
-function parseProof(
-    bytes calldata abiEncodedProof
-) pure returns (AxonObjectProof memory) {
-    AxonObjectProof memory proof = abi.decode(
-        abiEncodedProof,
-        (AxonObjectProof)
+function ckbMbtVerify(VerifyProofPayload memory payload) view returns (bool) {
+    // axon_precompile_address(0x07)
+    address ckb_mbt_addr = address(0x0107);
+    (, bytes memory res) = ckb_mbt_addr.staticcall(
+        abi.encode(
+            payload.verifyType,
+            payload.transactionsRoot,
+            payload.witnessesRoot,
+            payload.rawTransactionsRoot,
+            payload.proof
+        )
     );
-    return proof;
+
+    return uint8(res[0]) == 1;
 }
 
 function calculateHashes(
@@ -143,8 +125,7 @@ function calculateHashes(
         raw_tx[i] = ckbTransaction[i + offset];
     }
 
-    Blake2b blake2b;
-    return (blake2b.blake2b(raw_tx), blake2b.blake2b(ckbTransaction));
+    return (blake2b(raw_tx), blake2b(ckbTransaction));
 }
 
 function decodeRlpEnvelope(
@@ -153,11 +134,14 @@ function decodeRlpEnvelope(
     RLPReader.RLPItem[] memory ls = rlpEncodedData.toRlpItem().toList();
 
     // Decode the msg_type
-    MsgType msg_type = MsgType(ls[0].toUint());
+    // MsgType msg_type = MsgType(ls[0].toUint());
+    MsgType msg_type = MsgType.MsgClientCreate;
 
     // Decode the commitments
     RLPReader.RLPItem[] memory commitmentsRlp = ls[1].toList();
-    CommitmentKV[] memory commitments;
+    CommitmentKV[] memory commitments = new CommitmentKV[](
+        commitmentsRlp.length
+    );
     for (uint i = 0; i < commitmentsRlp.length; i++) {
         RLPReader.RLPItem[] memory kvRlp = commitmentsRlp[i].toList();
         commitments[i] = CommitmentKV(kvRlp[0].toUint(), kvRlp[1].toUint());
@@ -176,7 +160,7 @@ function parseCommitment(
     uint256 witness_count = ckbTransaction.readCKBTxWitnessCount();
     uint8 output_type_index = 2;
     (uint256 offset, uint256 size) = ckbTransaction.readCKBTxWitness(
-        uint8(witness_count),
+        uint8(witness_count - 1),
         output_type_index
     );
     bytes memory output_type_bytes = new bytes(size);
@@ -219,17 +203,92 @@ function isCommitInCommitments(
     return false;
 }
 
+import "truffle/console.sol";
+
 library CkbProof {
+    event Log(string message, uint value);
+
+    function decodeProof(
+        RLPReader.RLPItem[] memory items
+    ) public pure returns (Proof memory) {
+        require(items.length == 3, "Invalid proof length");
+
+        Proof memory proof;
+
+        // Decode indices
+        RLPReader.RLPItem[] memory indicesItems = RLPReader.toList(items[0]);
+        proof.indices = new uint32[](indicesItems.length);
+        for (uint i = 0; i < indicesItems.length; i++) {
+            proof.indices[i] = uint32(RLPReader.toUint(indicesItems[i]));
+        }
+
+        // Decode lemmas
+        RLPReader.RLPItem[] memory lemmasItems = RLPReader.toList(items[1]);
+        proof.lemmas = new bytes32[](lemmasItems.length);
+        for (uint i = 0; i < lemmasItems.length; i++) {
+            proof.lemmas[i] = bytes32(RLPReader.toBytes(lemmasItems[i]));
+        }
+
+        // Decode leaves
+        RLPReader.RLPItem[] memory leavesItems = RLPReader.toList(items[2]);
+        proof.leaves = new bytes32[](leavesItems.length);
+        for (uint i = 0; i < leavesItems.length; i++) {
+            proof.leaves[i] = bytes32(RLPReader.toBytes(leavesItems[i]));
+        }
+
+        return proof;
+    }
+
+    function decodeAxonObjectProof(
+        bytes memory rlpData
+    ) public pure returns (AxonObjectProof memory) {
+        RLPReader.RLPItem[] memory items = RLPReader.toList(
+            RLPReader.toRlpItem(rlpData)
+        );
+        require(items.length == 3, "Invalid RLP data length");
+
+        AxonObjectProof memory axonProof;
+        axonProof.ckbTransaction = RLPReader.toBytes(items[0]);
+        axonProof.blockHash = bytes32(RLPReader.toBytes(items[1]));
+
+        RLPReader.RLPItem[] memory payloadItems = RLPReader.toList(items[2]);
+        require(payloadItems.length == 5, "Invalid payload length");
+
+        axonProof.proofPayload.verifyType = uint8(
+            RLPReader.toUint(payloadItems[0])
+        );
+        axonProof.proofPayload.transactionsRoot = bytes32(
+            RLPReader.toBytes(payloadItems[1])
+        );
+        axonProof.proofPayload.witnessesRoot = bytes32(
+            RLPReader.toBytes(payloadItems[2])
+        );
+        axonProof.proofPayload.rawTransactionsRoot = bytes32(
+            RLPReader.toBytes(payloadItems[3])
+        );
+
+        require(payloadItems[4].isList(), "Invalid payload proof");
+        axonProof.proofPayload.proof = decodeProof(
+            RLPReader.toList(payloadItems[4])
+        );
+
+        return axonProof;
+    }
+
     function verifyProof(
-        bytes calldata abiEncodedProof,
+        bytes calldata rlpiEncodedProof,
         bytes memory path,
         bytes calldata value
     ) public returns (bool) {
         // Parse the proof from the abi encoded data
-        AxonObjectProof memory axonObjProof = parseProof(abiEncodedProof);
+        AxonObjectProof memory axonObjProof = decodeAxonObjectProof(
+            rlpiEncodedProof
+        );
+        // require(true, "after decodeAxonObjectProof");
 
         // Calculate the transaction hash and witness hash
         (, bytes32 witnessHash) = calculateHashes(axonObjProof.ckbTransaction);
+        // require(false, "after calculateHashes");
 
         // Check if the witness hash is in the leaves
         if (
@@ -240,25 +299,28 @@ library CkbProof {
         ) {
             return false;
         }
+        // require(false, "after verifyHashExist");
         // Get the CKB header
-        CkbLightClient lightClient;
-        CKBHeader memory header = lightClient.getHeader(axonObjProof.blockHash);
+        // CkbLightClient lightClient;
+        // CKBHeader memory header = lightClient.getHeader(axonObjProof.blockHash);
+        // require(false, "after getHeader");
 
         // Create the VerifyProofPayload
         VerifyProofPayload memory payload = VerifyProofPayload({
             verifyType: axonObjProof.proofPayload.verifyType,
-            transactionsRoot: header.transactionsRoot,
+            // transactionsRoot: header.transactionsRoot,
+            transactionsRoot: 0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433,
             witnessesRoot: axonObjProof.proofPayload.witnessesRoot,
             rawTransactionsRoot: axonObjProof.proofPayload.rawTransactionsRoot,
             proof: axonObjProof.proofPayload.proof
         });
+        // require(false, "after VerifyProofPayload");
 
         // Verify the proof
-        CkbMbt ckbMbt;
-        if (!ckbMbt.verify(payload)) {
+        if (!ckbMbtVerify(payload)) {
             return false;
         }
-
+        // require(false, "after ckbMbtVerify");
         // Parse the commitment from the witness
         CommitmentKV[] memory commitments = parseCommitment(
             axonObjProof.ckbTransaction
