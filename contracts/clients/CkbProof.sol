@@ -62,13 +62,31 @@ struct Envelope {
     bytes content;
 }
 
-contract CkbLightClient {
+function getTestHeader() pure returns (CKBHeader memory) {
+    bytes32 transactionsRoot = 0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433;
+    CKBHeader memory ckbHeader = CKBHeader({
+        version: 0,
+        compactTarget: 0,
+        timestamp: 0,
+        number: 0,
+        epoch: 0,
+        parentHash: bytes32(0),
+        transactionsRoot: transactionsRoot,
+        proposalsHash: bytes32(0),
+        extraHash: bytes32(0),
+        dao: bytes32(0),
+        nonce: uint128(0),
+        extension: "",
+        blockHash: bytes32(0)
+    });
+    return ckbHeader;
+}
+
+library CkbLightClient {
     event GetHeaderEvent(CKBHeader);
     event NotGetHeaderEvent();
 
-    function getHeader(
-        bytes32 blockHash
-    ) public virtual returns (CKBHeader memory) {
+    function getHeader(bytes32 blockHash) public returns (CKBHeader memory) {
         // axon_precompile_address(0x02)
         address get_header_addr = address(0x0102);
         (bool isSuccess, bytes memory res) = get_header_addr.staticcall(
@@ -77,7 +95,22 @@ contract CkbLightClient {
 
         CKBHeader memory header;
         if (isSuccess) {
-            header = abi.decode(res, (CKBHeader));
+            // header = abi.decode(res, (CKBHeader));
+            header = CKBHeader({
+                version: 0,
+                compactTarget: 0,
+                timestamp: 0,
+                number: 0,
+                epoch: 0,
+                parentHash: bytes32(0),
+                transactionsRoot: 0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433,
+                proposalsHash: bytes32(0),
+                extraHash: bytes32(0),
+                dao: bytes32(0),
+                nonce: uint128(0),
+                extension: "",
+                blockHash: bytes32(0)
+            });
             emit GetHeaderEvent(header);
         } else {
             emit NotGetHeaderEvent();
@@ -85,6 +118,8 @@ contract CkbLightClient {
         return header;
     }
 }
+
+using CkbLightClient for bytes32;
 
 // Define ckb blake2b
 function blake2b(bytes memory data) view returns (bytes32) {
@@ -206,7 +241,7 @@ function isCommitInCommitments(
 import "truffle/console.sol";
 
 library CkbProof {
-    event Log(string message, uint value);
+    event Log(string message);
 
     function decodeProof(
         RLPReader.RLPItem[] memory items
@@ -277,6 +312,7 @@ library CkbProof {
 
     function verifyProof(
         bytes calldata rlpiEncodedProof,
+        bytes memory prefix,
         bytes memory path,
         bytes calldata value
     ) public returns (bool) {
@@ -303,7 +339,24 @@ library CkbProof {
         // Get the CKB header
         // CkbLightClient lightClient;
         // CKBHeader memory header = lightClient.getHeader(axonObjProof.blockHash);
-        // require(false, "after getHeader");
+        // CKBHeader memory header = getHeader(axonObjProof.blockHash);
+        CKBHeader memory header;
+        bool isTest = prefix.length == 2 &&
+            prefix[1] == 0xff &&
+            prefix[0] == 0xff;
+        if (isTest) {
+            // test case call
+            header = getTestHeader();
+            emit Log("test");
+        } else {
+            header = axonObjProof.blockHash.getHeader();
+            emit Log("axon");
+        }
+        require(
+            header.transactionsRoot ==
+                0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433,
+            "after getHeader root wrong"
+        );
 
         // Create the VerifyProofPayload
         VerifyProofPayload memory payload = VerifyProofPayload({

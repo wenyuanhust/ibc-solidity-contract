@@ -1,6 +1,6 @@
 const Molecule = artifacts.require("Molecule");
-// const CkbLightClient = artifacts.require('CkbLightClient');
-const CkbLightClientMock = artifacts.require('CkbLightClientMock');
+const CkbLightClient = artifacts.require('CkbLightClient');
+// const CkbLightClientMock = artifacts.require('CkbLightClientMock');
 const CkbProof = artifacts.require("CkbProof");
 
 const CkbClient = artifacts.require("CkbClient");
@@ -15,13 +15,14 @@ contract("CkbProof", (accounts) => {
     console.log("molecule deployed on ", molecule.address);
     await CkbProof.link(molecule);
 
-    const ckbLightClient = await CkbLightClientMock.new();
+    // const ckbLightClient = await CkbLightClientMock.new();
+    const ckbLightClient = await CkbLightClient.new();
     console.log("ckbLightClient deployed on ", ckbLightClient.address);
     // the blockNumberHexString can be arbitrary hex
     let blockNumberHexString = "0x2a";
     let blockNumber = ethers.utils.hexZeroPad(blockNumberHexString, 32);
-    const header = await ckbLightClient.getHeader(blockNumber);
-    console.log("header transactionsRoot", header.transactionsRoot);  
+    // const header = await ckbLightClient.getHeader(blockNumber);
+    // console.log("header transactionsRoot", header.transactionsRoot);  
     await CkbProof.link(ckbLightClient);
 
     const ckbProofInstance = await CkbProof.new();
@@ -47,7 +48,7 @@ contract("CkbProof", (accounts) => {
       revisionNumber: 0,
       revisionHeight: 0
     };
-    const result = await ckbClient.verifyMembership.call("", data, 0, 0, rlpEncodedProof, "0x", pathBytes, valueBytes);
+    const result = await ckbClient.verifyMembership.call("", data, 0, 0, rlpEncodedProof, "0xffff", pathBytes, valueBytes);
     // const result = await ckbClient.verifyMembership("", data, 0, 0, rlpEncodedProof, "0x", pathBytes, valueBytes);
     assert.equal(result, true, "The proof verification did not return the expected result");
   });

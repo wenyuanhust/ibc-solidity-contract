@@ -69,11 +69,11 @@ contract CkbClient is ILightClient {
         uint64,
         uint64,
         bytes calldata proof,
-        bytes memory,
+        bytes memory prefix,
         bytes memory path,
         bytes calldata value
     ) external override returns (bool) {
-        return CkbProof.verifyProof(proof, path, value);
+        return CkbProof.verifyProof(proof, prefix, path, value);
     }
 
     /**
