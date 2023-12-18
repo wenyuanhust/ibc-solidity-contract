@@ -1,0 +1,437 @@
+ganache v7.9.0 (@ganache/cli: 0.10.0, @ganache/core: 0.10.0)
+Starting RPC server
+
+Available Accounts
+==================
+(0) 0x5E6C12a0fc85D2eB4502ddfC5e23D8538E9f8320 (1000 ETH)
+(1) 0x9cD39D1531a4de4880556d1580eB40F5a2Ae2469 (1000 ETH)
+(2) 0xE128F8FD92274B8b0eD463ADB26778705c6778C5 (1000 ETH)
+(3) 0x85e51eca6549f2C74B314085d8E71a318dD5eb33 (1000 ETH)
+(4) 0xB4D1C07c8342a7be4b9b168A8643d00160AD977F (1000 ETH)
+(5) 0x4946c2487837B71664Ef9aac4B2eE8De7c1ECDf7 (1000 ETH)
+(6) 0x7f283Ae7adab03e9A8e0Badb63d01E624F4EB612 (1000 ETH)
+(7) 0xE791E6cA76332834dDBd05136a8F9176D0bCdF51 (1000 ETH)
+(8) 0x7D900B83910446455710c24384C94B366369d7a0 (1000 ETH)
+(9) 0x625845fF588bb9332C280E40781fc696b9c637a1 (1000 ETH)
+
+Private Keys
+==================
+(0) 0x8cf811eb1fdfa749916835b538e27f8ae159522596bfbda381d46567de75e636
+(1) 0xc29fb1be28b4247af1b0848ffb94dd85e5a5a5f5e1c7cab00267c364314c7a22
+(2) 0x2b55673c51ee5a0b74fbce4dbf3f391f5fd29e41f6d13b3d5a3f3d6bac1185f0
+(3) 0xc691fe38a42b832d27231ec1f0b65cc40a12b9126c61426d685a2ddfcd665c7f
+(4) 0x46819cba224c3cb16fd53d20753791306744deaa820257c63c8ad79f04840b90
+(5) 0x7c086967f09d38487964b7b2c646abeaa31bb8ab2048d9dd6e4fb74de3c05de1
+(6) 0xc5caa9584a0ae885bd360f6b140ac25b1ed1cadc52ada2a298bc9646f15e9f29
+(7) 0x7dc5f91e0edb326f669fb3140f3d67f188362f9b4ebd46609b4ca48cb635eab3
+(8) 0x722585074fe3a7aa65e6928671b597b4322a6299e1e1b6a42371fce572e1cf0e
+(9) 0xbb1d9e1e9c36adcc9401b3a6575ee1058380ed8a5986628426be172caf3e5f30
+
+HD Wallet
+==================
+Mnemonic:      sphere visit diagram drop guess enable evolve floor breeze boost apology model
+Base HD Path:  m/44'/60'/0'/0/{account_index}
+
+Default Gas Price
+==================
+2000000000
+
+BlockGas Limit
+==================
+30000000
+
+Call Gas Limit
+==================
+50000000
+
+Chain
+==================
+Hardfork: shanghai
+Id:       1337
+
+RPC Listening on 127.0.0.1:8545
+
+eth_blockNumber
+net_version
+eth_accounts
+eth_blockNumber
+net_version
+eth_accounts
+eth_getBlockByNumber
+eth_accounts
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xe993bf2c071a11d376f6e4a25570f44f854a0a43df0472dbcf64ff49e92dcd2c
+  Contract created: 0x6f7446289a6fb0e70cd56d477f46104d9de663c2
+  Gas usage: 3477315
+  Block number: 1
+  Block time: Mon Dec 18 2023 09:36:13 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xa9e53f3663868b4f20c445f7ddead7ff4929ae4a361ef0efa4099082f117b6dc
+  Contract created: 0xd44046fbabf0315717996599751544aa75bee1e4
+  Gas usage: 4573322
+  Block number: 2
+  Block time: Mon Dec 18 2023 09:36:13 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x0227faf0be8fe0f149b41565c3741cd9c2d218c7e2217bdfe60bb8155e27f750
+  Contract created: 0xdf2b0fece1dd6ca98679541c885ac910679c2edc
+  Gas usage: 4527085
+  Block number: 3
+  Block time: Mon Dec 18 2023 09:36:13 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xb570361f34e2f5eb7469ef3bd29a141a68c31905742f26fe05e5df6816701272
+  Contract created: 0x25f7f405c5ce19c547bb948827d5f66f5d65a735
+  Gas usage: 1961746
+  Block number: 4
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x390a36a863fbfb703918cbe100ed55af68bee4237b044ca5f624b2a9d2e08f39
+  Contract created: 0x58629886ec1810b98bebe4cb2f544da8a481bd32
+  Gas usage: 704514
+  Block number: 5
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xd141b17e2ffccc876e69b42f86a4203d87465f20a2bc72e3c01ce56a36034668
+  Contract created: 0xa8353b8d4e9153e02a62c7a0bae46ea62b1ec903
+  Gas usage: 428974
+  Block number: 6
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x86302086d6d6354e4ddc51dbec5f9ce148f07dadd3b4e328e7c204b9779f0112
+  Contract created: 0xfbceb3c5f83143dfde3021d2d37d9e3b56bf7d77
+  Gas usage: 4824699
+  Block number: 7
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x9209e46022b392a6b6eeb94e0f1e6b0b2f99c64cdbbfad098bb242f240ec462e
+  Gas usage: 49534
+  Block number: 8
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x8108d632f692e9189161c61c2c342f2435fed1ae669c693919ae04df37259e60
+  Gas usage: 49570
+  Block number: 9
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xc2b526cd25a47a0e3dc7536abe5abb7fe71caeba3a4ce3551cef0a10d021906e
+  Contract created: 0x65f8c035e3880387709a7b87d7adeabbd9efa410
+  Gas usage: 2480307
+  Block number: 10
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x13c1e115869c9d6f431f633e2c5a198636550922f1360f1b4bf42275fb6939e4
+  Gas usage: 68251
+  Block number: 11
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+net_version
+eth_blockNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xbe61e3e8f4324d9511c33e2fddd6dbcb72a71d549e9edeecba26a59a06259e65
+  Contract created: 0xac574e7c1b924c296fad15138371587e3c780887
+  Gas usage: 5002473
+  Block number: 12
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_gasPrice
+eth_getBlockByNumber
+eth_sendTransaction
+eth_getBlockByNumber
+
+  Transaction: 0x6585697057f638430488f97210421154e539c4ae49216480b0255d5ca992f8d0
+  Gas usage: 68275
+  Block number: 13
+  Block time: Mon Dec 18 2023 09:36:14 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+evm_snapshot
+Saved snapshot #1
+eth_getBlockByNumber
+net_version
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_blockNumber
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xa3c46090de119c3f70529a40206061c66dc39c51676e7d42ea22d7bdd73e110c
+  Contract created: 0xf0c3f649aee0ef3257382acd13724e9e2ecf0ee7
+  Gas usage: 527012
+  Block number: 14
+  Block time: Mon Dec 18 2023 09:36:16 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+net_version
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xf1286bfa37837877c9e50660da8a5343e0a72177fb8b1d70e8b7a2f8d221d222
+  Contract created: 0x4cbee4defb44feab0756153f15ce8ed2f65f40d1
+  Gas usage: 303954
+  Block number: 15
+  Block time: Mon Dec 18 2023 09:36:16 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0xfb57c30b429465bd2e5c161d06e2fca6e0699e48e9505a5ae1d0007e07020fe6
+  Contract created: 0x0a09206e58da019ce11bc4e23019ec9d329bb1d0
+  Gas usage: 1921311
+  Block number: 16
+  Block time: Mon Dec 18 2023 09:36:16 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_gasPrice
+eth_sendTransaction
+
+  Transaction: 0x12d7d75db193280be9d770e26447c564f3c8384e9e8100bc67344a4c7b759257
+  Contract created: 0x1ecf3c5e10a0317280d42b2766339e09e1d83103
+  Gas usage: 638239
+  Block number: 17
+  Block time: Mon Dec 18 2023 09:36:16 GMT+0800 (China Standard Time)
+
+eth_getTransactionReceipt
+eth_getCode
+eth_getBlockByNumber
+eth_estimateGas
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getBlockByNumber
+eth_getLogs
