@@ -62,26 +62,6 @@ struct Envelope {
     bytes content;
 }
 
-function getTestHeader() pure returns (CKBHeader memory) {
-    bytes32 transactionsRoot = 0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433;
-    CKBHeader memory ckbHeader = CKBHeader({
-        version: 0,
-        compactTarget: 0,
-        timestamp: 0,
-        number: 0,
-        epoch: 0,
-        parentHash: bytes32(0),
-        transactionsRoot: transactionsRoot,
-        proposalsHash: bytes32(0),
-        extraHash: bytes32(0),
-        dao: bytes32(0),
-        nonce: uint128(0),
-        extension: "",
-        blockHash: bytes32(0)
-    });
-    return ckbHeader;
-}
-
 library CkbLightClient {
     event GetHeaderEvent(CKBHeader);
     event NotGetHeaderEvent();
@@ -95,7 +75,9 @@ library CkbLightClient {
 
         CKBHeader memory header;
         if (isSuccess) {
-            // header = abi.decode(res, (CKBHeader));
+            header = abi.decode(res, (CKBHeader));
+            /*
+            replace above decode into the following data can pass test
             header = CKBHeader({
                 version: 0,
                 compactTarget: 0,
@@ -111,6 +93,7 @@ library CkbLightClient {
                 extension: "",
                 blockHash: bytes32(0)
             });
+            */
             emit GetHeaderEvent(header);
         } else {
             emit NotGetHeaderEvent();
@@ -238,81 +221,78 @@ function isCommitInCommitments(
     return false;
 }
 
-import "truffle/console.sol";
+function decodeProof(
+    RLPReader.RLPItem[] memory items
+) pure returns (Proof memory) {
+    require(items.length == 3, "Invalid proof length");
+
+    Proof memory proof;
+
+    // Decode indices
+    RLPReader.RLPItem[] memory indicesItems = RLPReader.toList(items[0]);
+    proof.indices = new uint32[](indicesItems.length);
+    for (uint i = 0; i < indicesItems.length; i++) {
+        proof.indices[i] = uint32(RLPReader.toUint(indicesItems[i]));
+    }
+
+    // Decode lemmas
+    RLPReader.RLPItem[] memory lemmasItems = RLPReader.toList(items[1]);
+    proof.lemmas = new bytes32[](lemmasItems.length);
+    for (uint i = 0; i < lemmasItems.length; i++) {
+        proof.lemmas[i] = bytes32(RLPReader.toBytes(lemmasItems[i]));
+    }
+
+    // Decode leaves
+    RLPReader.RLPItem[] memory leavesItems = RLPReader.toList(items[2]);
+    proof.leaves = new bytes32[](leavesItems.length);
+    for (uint i = 0; i < leavesItems.length; i++) {
+        proof.leaves[i] = bytes32(RLPReader.toBytes(leavesItems[i]));
+    }
+
+    return proof;
+}
+
+function decodeAxonObjectProof(
+    bytes memory rlpData
+) pure returns (AxonObjectProof memory) {
+    RLPReader.RLPItem[] memory items = RLPReader.toList(
+        RLPReader.toRlpItem(rlpData)
+    );
+    require(items.length == 3, "Invalid RLP data length");
+
+    AxonObjectProof memory axonProof;
+    axonProof.ckbTransaction = RLPReader.toBytes(items[0]);
+    axonProof.blockHash = bytes32(RLPReader.toBytes(items[1]));
+
+    RLPReader.RLPItem[] memory payloadItems = RLPReader.toList(items[2]);
+    require(payloadItems.length == 5, "Invalid payload length");
+
+    axonProof.proofPayload.verifyType = uint8(
+        RLPReader.toUint(payloadItems[0])
+    );
+    axonProof.proofPayload.transactionsRoot = bytes32(
+        RLPReader.toBytes(payloadItems[1])
+    );
+    axonProof.proofPayload.witnessesRoot = bytes32(
+        RLPReader.toBytes(payloadItems[2])
+    );
+    axonProof.proofPayload.rawTransactionsRoot = bytes32(
+        RLPReader.toBytes(payloadItems[3])
+    );
+
+    require(payloadItems[4].isList(), "Invalid payload proof");
+    axonProof.proofPayload.proof = decodeProof(
+        RLPReader.toList(payloadItems[4])
+    );
+
+    return axonProof;
+}
 
 library CkbProof {
     event Log(string message);
 
-    function decodeProof(
-        RLPReader.RLPItem[] memory items
-    ) public pure returns (Proof memory) {
-        require(items.length == 3, "Invalid proof length");
-
-        Proof memory proof;
-
-        // Decode indices
-        RLPReader.RLPItem[] memory indicesItems = RLPReader.toList(items[0]);
-        proof.indices = new uint32[](indicesItems.length);
-        for (uint i = 0; i < indicesItems.length; i++) {
-            proof.indices[i] = uint32(RLPReader.toUint(indicesItems[i]));
-        }
-
-        // Decode lemmas
-        RLPReader.RLPItem[] memory lemmasItems = RLPReader.toList(items[1]);
-        proof.lemmas = new bytes32[](lemmasItems.length);
-        for (uint i = 0; i < lemmasItems.length; i++) {
-            proof.lemmas[i] = bytes32(RLPReader.toBytes(lemmasItems[i]));
-        }
-
-        // Decode leaves
-        RLPReader.RLPItem[] memory leavesItems = RLPReader.toList(items[2]);
-        proof.leaves = new bytes32[](leavesItems.length);
-        for (uint i = 0; i < leavesItems.length; i++) {
-            proof.leaves[i] = bytes32(RLPReader.toBytes(leavesItems[i]));
-        }
-
-        return proof;
-    }
-
-    function decodeAxonObjectProof(
-        bytes memory rlpData
-    ) public pure returns (AxonObjectProof memory) {
-        RLPReader.RLPItem[] memory items = RLPReader.toList(
-            RLPReader.toRlpItem(rlpData)
-        );
-        require(items.length == 3, "Invalid RLP data length");
-
-        AxonObjectProof memory axonProof;
-        axonProof.ckbTransaction = RLPReader.toBytes(items[0]);
-        axonProof.blockHash = bytes32(RLPReader.toBytes(items[1]));
-
-        RLPReader.RLPItem[] memory payloadItems = RLPReader.toList(items[2]);
-        require(payloadItems.length == 5, "Invalid payload length");
-
-        axonProof.proofPayload.verifyType = uint8(
-            RLPReader.toUint(payloadItems[0])
-        );
-        axonProof.proofPayload.transactionsRoot = bytes32(
-            RLPReader.toBytes(payloadItems[1])
-        );
-        axonProof.proofPayload.witnessesRoot = bytes32(
-            RLPReader.toBytes(payloadItems[2])
-        );
-        axonProof.proofPayload.rawTransactionsRoot = bytes32(
-            RLPReader.toBytes(payloadItems[3])
-        );
-
-        require(payloadItems[4].isList(), "Invalid payload proof");
-        axonProof.proofPayload.proof = decodeProof(
-            RLPReader.toList(payloadItems[4])
-        );
-
-        return axonProof;
-    }
-
     function verifyProof(
         bytes calldata rlpiEncodedProof,
-        bytes memory prefix,
         bytes memory path,
         bytes calldata value
     ) public returns (bool) {
@@ -320,11 +300,9 @@ library CkbProof {
         AxonObjectProof memory axonObjProof = decodeAxonObjectProof(
             rlpiEncodedProof
         );
-        // require(true, "after decodeAxonObjectProof");
 
         // Calculate the transaction hash and witness hash
         (, bytes32 witnessHash) = calculateHashes(axonObjProof.ckbTransaction);
-        // require(false, "after calculateHashes");
 
         // Check if the witness hash is in the leaves
         if (
@@ -335,45 +313,24 @@ library CkbProof {
         ) {
             return false;
         }
-        // require(false, "after verifyHashExist");
+
         // Get the CKB header
-        // CkbLightClient lightClient;
-        // CKBHeader memory header = lightClient.getHeader(axonObjProof.blockHash);
-        // CKBHeader memory header = getHeader(axonObjProof.blockHash);
-        CKBHeader memory header;
-        bool isTest = prefix.length == 2 &&
-            prefix[1] == 0xff &&
-            prefix[0] == 0xff;
-        if (isTest) {
-            // test case call
-            header = getTestHeader();
-            emit Log("test");
-        } else {
-            header = axonObjProof.blockHash.getHeader();
-            emit Log("axon");
-        }
-        require(
-            header.transactionsRoot ==
-                0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433,
-            "after getHeader root wrong"
-        );
+        CKBHeader memory header = axonObjProof.blockHash.getHeader();
 
         // Create the VerifyProofPayload
         VerifyProofPayload memory payload = VerifyProofPayload({
             verifyType: axonObjProof.proofPayload.verifyType,
-            // transactionsRoot: header.transactionsRoot,
-            transactionsRoot: 0x7c57536c95df426f5477c344f8f949e4dfd25443d6f586b4f350ae3e4b870433,
+            transactionsRoot: header.transactionsRoot,
             witnessesRoot: axonObjProof.proofPayload.witnessesRoot,
             rawTransactionsRoot: axonObjProof.proofPayload.rawTransactionsRoot,
             proof: axonObjProof.proofPayload.proof
         });
-        // require(false, "after VerifyProofPayload");
 
         // Verify the proof
         if (!ckbMbtVerify(payload)) {
             return false;
         }
-        // require(false, "after ckbMbtVerify");
+
         // Parse the commitment from the witness
         CommitmentKV[] memory commitments = parseCommitment(
             axonObjProof.ckbTransaction
